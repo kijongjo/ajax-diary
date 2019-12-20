@@ -127,6 +127,91 @@ send():post 방식일때만 value 값을 준다.
                    .responseText
 responsetext는 서버의 응답값이다.브라우저에 보이는 값이 responsetext에 들어간다.		   
 
+-----------------------------------------------------------------------------------------------------------------------------------
+정리예제
+설명 client역할인 ajax2 파일에서 특정 button을 클릭시 server로 xml메세지를 보내는 helloToServer method가 실행이 된다. 
+실행이 되고 나면 method 안에서 XMLHttprequest 객체를 생성하고 server쪽으로 보내는 sendrequest method에 server의 페이지 주소, callback 함수 
+,parameter값, method 방식이 담겨져 보내지게 된다. 
+
+  서버 역할인 hello.jsp 파일을 보게되면 jsp로 이루어져 있는데 jsp는 서버에서 가동되는 언어이기 때문이다. 
+   hello.jsp에서 정보를 처리한 후에 다시 client로 보내면 callback 함수가 보내온 정보를 다시 받는데 
+   responseText를 이용하여 받는다. 중요한 점은 서버역할을 하는 곳에서는 태그를 전부 지워야 한다는 것이다. 
+   *주석도 jsp안에서 쓰는것은 영향을 안주지만 javascript 주석 <-- -->은 영향을 주기 때문에 꼭 jsp내에서만 주석을 사용해야 한다.
+   
+
+ex)
+ client 역할인 ajax2. 파일 
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ajax2.jsp</title>
+<script src="../js/httpRequest.js"></script>
+<!--버튼을 클릭하면 웹 브라우저 콘솔에 메세지 출력하기   -->
+<script>
+                       function helloToServer(){
+                    	   var txt = document.getElementById("txt").value;
+                    	   
+            
+                    	   var params = "txt="+txt;
+                    	   //callback함수 정의함 parameter값 정의함 
+                    	   sendRequest('hello.jsp',params,callback,"POST");
+                       }
+                       function callback(){
+                    	   if(xhr.readyState==4){
+                    		  //정상페이지면 뭔지 찍어보라 .
+                    		   if(xhr.status==200){
+                    			   console.dir(xhr);
+                    			   console.log(xhr.responseText);
+                                  //하지만 이렇게 하면 태그가 섞이게 된다. 그래서 값만 받아오도록 해야한다.
+                    			   document.getElementById("div1").innerHTML=xhr.responseText;    			   
+                    			  
+                    		   }
+                    		   
+                    		   
+                    	   }
+                    	   
+                    	   
+                       }
+
+</script>
+</head>
+<body>
+	ID:<input type="text" name="" id="txt1" /> 
+	<input type="button" value="입력" onclick="helloToServer();" />
+   <div id="div1"></div>
+</body>
+</html>
+
+
+  
+  서버역할인 hello.jsp 파일 
+
+
+<%@page import="VO.DeptVO"%>
+<%@page import="DAO.DeptDAO"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+
+
+	<%
+	request.setCharacterEncoding("UTF-8");
+	 request.setCharacterEncoding("UTF-8");
+   	String txt = request.getParameter("txt");
+		int no = 10;
+		DeptDAO dao = new DeptDAO();
+		if (txt!=null)
+			no = Integer.parseInt(txt);
+		  
+		DeptVO vo = dao.selectOne(no);
+
+		out.println("<h1>" + vo.getDeptno() + ":" + vo.getDname() + ":" + vo.getLoc() + ":" + "</h1>");
+	%>
+
+	
+
 
 
 
