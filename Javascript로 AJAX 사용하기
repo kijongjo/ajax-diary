@@ -1,0 +1,105 @@
+xmlhttprequest객체의 변수 선언을 해주어야 한다. 특이한 점은 각각의 os 환경에 따른 브라우저에 맞게 
+설정을 해주어야 한다는 것이다. 
+
+1)
+xmlhttprequest를 얻어오는 함수를 만든다 . 각각의 OS마다 객체를 얻어오는 방식을 명시해줘야한다.
+  
+  function getXMLHttpRequest(){
+		// MS 브라우저라면 
+		if(window.ActiveObject){
+			try{
+				return new ActiveXObject("MsMXL2.XMLHTTP");
+			}catch (e) {
+				try{
+				return new ActiveXObject("Microsoft.XMLHTTP");
+				}catch (e1) {
+					null;
+				}
+			} 
+		// 만약   ms의 브라우저가 아니라면
+		}else if(window.XMLHttpRequest){
+			return new XMLHttpRequest();
+		}else {
+			return null;
+		}
+	}
+  2) 
+  XMLHttpRequest 객체를 사용해서 지정한 방식(get,post),지정된 url,첨부할 파라미터 값을 사용해서 웹서버에 요청을 전송한다.
+
+var xhr= null;   <-생성된 XMLHttpRequest객체의 변수 선언
+function sendRequest(url,params, callback, method){
+   		xhr= getXMLHttpRequest();                 <-객체 초기화 
+   		
+   		var httpMethod = method ? method:'GET';   <-삼항연산 method가 method식으로 정확히 되어 있다면 method를 쓰고 오타등의 이유로 맞지 않다면 get으로 고쳐라 
+   		if(httpMethod != 'GET' && httpMethod != 'POST'){
+   				httpMethod='GET';
+   		}
+   		var httpParams = 
+   		(params == null || params=="")? null : params;
+   		
+   		var httpUrl = url;
+   		// http 요청방식이 GET이면 url뒤에 파라미터 붙임
+   		if(httpMethod=='GET' && httpMethod != null){
+   				httpUrl = httpUrl + "?" + httpParams;
+   		}
+   		
+   		// 동기방식에서 브라우저간 차이가 발생하므로 크로스 브라우저를 위해
+   		// 항상 비동기식으로 XMLHttpRequest객체 사용
+   		// open 먼저  get인지 포스트인지, url따라가기  비동기화면 true 동기화면 false 사실상 언제나 true를 쓴다.
+   		xhr.open(httpMethod,httpUrl, true);
+   		
+   		// 웹서버에 전송할 컨텐트 타입지정
+   		xhr.setRequestHeader(
+   	'Content-Type','application/x-www-form-urlencoded');
+   		// readState 값이 바뀔때마다 호출될 callback 함수 지정
+   		xhr.onreadystatechange = callback;
+   		// Http요청 방식이 'POST' 이면 send() 함수를 통해 파라미터 전송
+   		xhr.send(httpMethod== 'POST'?httpParams:null);
+   		//이후로는 callback 이라는 이름의 함수를 쓰면 된다. 
+   		
+   	}
+
+
+
+*xhr에 있는 속성  .onreadystatechange
+xhr.onreadystatechange =함수명       <-기다리고있다가 상태가 변할때마다 호출하는 속성이다.
+ex)
+
+function load(url) {
+
+		//1.xmlhttprequest 객체 얻어오기 
+   xhr=getXMLHttpRequest();
+  
+	  //callback 함수
+    //대기하고 있다가 응답이 오면 이 함수를 실행
+    //xhr.onreadystatechange =함수명
+    //xhr에 있는 속성
+    // onreadystatechange: null //<-기다리고있다가 상태가 변할때마다 호출하는 속성이다.
+	 xhr.onreadystatechange=viewMessage;
+	//3.open(get방식, 주소, 비동기통신)
+      xhr.open("GET",url,true);
+	//GET방식으로 url에 접근하는 비동기방식으로 통신하라는 말이다. 
+	//4. send():post 방식일때만 value 값을 준다. 
+	xhr.send(null);
+	
+	}
+	
+	function viewMessage(){
+		
+		console.log(xhr.readyState);//<-4개의 상호작용체가 왔다갔다 함에 있어 상호작용을 볼 수가 있다. 4면 통신이 끝남을 나타낸다. 
+		if(xhr.readyState==4){//통신완료 
+		//정상페이지가 되면 	
+		if(xhr.status==200){
+			  //alert(xhr.responseText);
+			  //속성에서 responsetext는 서버의 응답값이다.
+			  //브라우저에 보이는 값이 responsetext에 들어간다.
+		   //div에 내용으로 출력하고자한다면 ?
+				  var div1=  document.getElementById("div1");
+		              div1.innerText=xhr.responseText;
+		}
+			
+		}
+		
+		}
+  
+ 
