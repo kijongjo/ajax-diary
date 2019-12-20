@@ -103,3 +103,20 @@ function load(url) {
 		}
   
  
+1. 유저가 이벤트 발생시키면 자바스크립트 함수가 호출된다.
+2. XMLHttpRequest 객체의 인스턴스가 생긴다.
+3. XMLHttpRequest 객체는 현재 HTML페이지의 상태를 가진 XML메시지를 구성하여 웹서버로 보낸다.
+4. 서버내에서 내부처리한뒤에 응답 XML메시지를 보내어 XMLHttpRequest객체가 수신한다.
+5,6 웹 서버에서 반환된 XML메시지를 파싱하여 DOM객체를 업데이트한다.
+
+   *https://gojoo.tistory.com/72의 그림 참고하기 
+     
+     
+     
+  
+
+
+
+
+
+
