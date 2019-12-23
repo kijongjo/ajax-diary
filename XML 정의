@@ -263,3 +263,16 @@ EX)
 
 
 
+속성에 성질 부여하기
+ID:중복되면 안된다. REQUIRED:필수 항목이다.
+FIXED:고정된 값을 나타낸다.
+
+
+EX)
+ <!ATTLIST 베스트셀러 code (A|B|C) "C" >
+ <!ATTLIST 베스트셀러 ISBN ID #REQUIRED > <!--ID:중복되면 안된다. REQUIRED:필수 항목이다.  -->
+ <!ATTLIST 베스트셀러 단위 CDATA #FIXED "권" > <!--고정된 값을 나타낸다.  -->
+
+
+
+
