@@ -105,7 +105,7 @@ root 엘리먼트부터 정의한다.
 5)
 값을 가지고 있다고 표현할 때에는 (#PCDATA)를 넣는다. parsed Character Data이다.
 ex)
-<!ELEMENT 사원들 (사원)+ >
+<!ELEMENT 사원들 (사원)+ >              <- +는 자식이 여러개임을 나타낸다.
 <!ELEMENT 사원 (사번,이름) >
 
 <!ELEMENT 사번 (#PCDATA) >
